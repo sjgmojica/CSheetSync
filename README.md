@@ -95,15 +95,16 @@ Current validation includes:
 ## ✅ Modular Architecture
 
 ```
-CSV-config.gs
-CSV-utils.gs
-CSV-importEngine.gs
-CSV-writeEngine.gs
-CSV-dialog.html
-CSV-dialogJS.html
+CSV-Config.gs
+CSV-Utils.gs
+CSV-Tools.gs
+CSV-ImportEngine.gs
+CSV-WriteEngine.gs
+CSV-Logger.gs
+CSV-Dialog.html
 ```
 
-Each file has a single responsibility, making the framework easier to maintain and extend.
+Each file has a single responsibility, making the framework easier to maintain and extend. `CSV-Dialog.html` is self-contained (CSS and JS are inlined directly in the file rather than split into separate partials) to reduce the number of server-side template-evaluation calls Apps Script has to make when opening the dialog.
 
 ---
 
@@ -149,17 +150,23 @@ Update         Insert
 ```text
 ImportFlow
 │
-├── CSV-config.gs
+├── CSV-Config.gs
 │
-├── CSV-utils.gs
+├── CSV-Utils.gs
 │
-├── CSV-importEngine.gs
+├── CSV-Tools.gs
 │
-├── CSV-writeEngine.gs
+├── CSV-ImportEngine.gs
 │
-├── CSV-dialog.html
+├── CSV-WriteEngine.gs
 │
-└── CSV-dialogJS.html
+├── CSV-Logger.gs
+│
+├── CSV-Dialog.html
+│
+├── package.json
+│
+└── test/
 ```
 
 ---
