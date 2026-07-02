@@ -43,17 +43,12 @@ function showUploadDialog() {
   const html = template
     .evaluate()
     .setWidth(1200)
-    .setHeight(700);
+    .setHeight(700)
+    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   SpreadsheetApp.getUi().showModalDialog(
     html,
     `Import CSV - ${config.displayName}`
   );
 
-}
-/**
- * Include HTML partials (Future use)
- */
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
