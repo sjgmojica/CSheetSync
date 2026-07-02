@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+
+    <?!= include('CSV-DialogCSS'); ?>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =======================================================
+         HEADER
+    ======================================================== -->
+
+    <header class="header">
+
+        <div class="header-left">
+
+            <h1>📤 CSV Import</h1>
+
+            <div class="sheet-info">
+
+                <span class="label">
+                    Destination Sheet
+                </span>
+
+                <span class="sheet-name">
+                    <?= sheetName ?>
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <span id="connectionStatus" class="badge ready">
+                Ready
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- =======================================================
+         MAIN CONTENT
+    ======================================================== -->
+
+    <main class="main-grid">
+
+        <!-- ==========================================
+             LEFT PANEL
+        =========================================== -->
+
+        <section class="left-panel">
+
+            <div class="panel">
+
+                <h2>Upload CSV</h2>
+
+                <div
+                    id="dropZone"
+                    class="drop-zone">
+
+                    <div class="drop-icon">
+
+                        📁
+
+                    </div>
+
+                    <h3>
+
+                        Drag & Drop CSV
+
+                    </h3>
+                    <p>
+                        or click to browse
+                    </p>
+
+                    <input
+                        type="file"
+                        id="fileInput"
+                        accept=".csv">
+
+                </div>
+
+
+                <!-- Selected File -->
+
+                <div
+                    id="fileCard"
+                    class="file-card">
+                    <div class="file-details">
+
+                        <div
+                            id="fileName">
+                            No file selected
+                        </div>
+
+                        <div
+                            id="fileSize">
+
+                            —
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="button-group">
+
+                    <button
+                        id="uploadBtn">
+
+                        Upload & Update
+
+                    </button>
+
+                    <button
+                        id="cancelBtn">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             RIGHT PANEL
+        =========================================== -->
+
+        <section class="right-panel">
+
+            <!-- Progress -->
+
+            <div class="panel">
+
+                <h2>
+
+                    Import Progress
+
+                </h2>
+
+                <div
+                    class="progress-container">
+
+                    <div
+                        id="progressBar"
+                        class="progress-bar">
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="statusText"
+                    class="status-text">
+
+                    Waiting for file...
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Summary -->
+
+            <div class="panel">
+
+                <h2>
+
+                    Import Summary
+
+                </h2>
+
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <span class="stat-title">
+
+                            Total
+
+                        </span>
+
+                        <span
+                            id="totalCount"
+                            class="stat-value">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-title">
+
+                            Updated
+
+                        </span>
+
+                        <span
+                            id="updatedCount"
+                            class="stat-value">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-title">
+
+                            Inserted
+
+                        </span>
+
+                        <span
+                            id="insertedCount"
+                            class="stat-value">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-title">
+
+                            Skipped
+
+                        </span>
+
+                        <span
+                            id="skippedCount"
+                            class="stat-value">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Import Details -->
+
+                <div class="summary-details">
+
+                    <div class="detail-row">
+
+                        <span>Started</span>
+
+                        <span id="startedAt">-</span>
+
+                    </div>
+
+                    <div class="detail-row">
+
+                        <span>Completed</span>
+
+                        <span id="completedAt">-</span>
+
+                    </div>
+
+                    <div class="detail-row">
+
+                        <span>Duration</span>
+
+                        <span id="duration">-</span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Message -->
+
+                <div
+                    id="messageBox"
+                    class="message-box">
+
+                    Waiting for import...
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<?!= include('CSV-DialogJS'); ?>
+
+</body>
+
+</html>
