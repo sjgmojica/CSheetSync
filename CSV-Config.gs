@@ -12,6 +12,7 @@ const CSV_CONFIG = {
     ignoreBlankRows: true,
     trimValues: true,
     protectedColumns: [
+      "transaction_date",
       "Date Action Alert",
       "Owner",
       "Refunded?",
@@ -40,7 +41,7 @@ const CSV_CONFIG = {
       "merchant_company": "merchant_company",
       "descriptor": "descriptor",
       "source": "source",
-      "match_status": "match_status",
+      "reason_code": "reason_code",
       "arn": "ARN"
     }
   }

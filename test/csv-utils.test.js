@@ -11,6 +11,36 @@ test('normalizeValue trims strings and handles null/undefined', () => {
   assert.equal(gas.normalizeValue(42), '42');
 });
 
+test('normalizeValue formats Date objects as yyyy-MM-dd instead of String()', () => {
+  // Sheet cells come back as real Date objects; comparing them to a
+  // plain CSV date string via String(date) never matches (see the
+  // MISMATCH bug this test guards against). Stub Utilities/Session
+  // since the real Apps Script runtime isn't available here.
+  const calls = [];
+  const gasWithDates = loadGasModule('CSV-Utils.gs', {
+    Utilities: {
+      formatDate: (date, tz, fmt) => {
+        calls.push({ date, tz, fmt });
+        return '2026-06-12';
+      }
+    },
+    Session: {
+      getScriptTimeZone: () => 'Asia/Manila'
+    }
+  });
+
+  // Built with the vm context's own Date constructor: `instanceof Date`
+  // inside the sandbox only recognizes dates from its own realm.
+  const d = new gasWithDates.Date('2026-06-11T16:00:00.000Z');
+  const result = gasWithDates.normalizeValue(d);
+
+  assert.equal(result, '2026-06-12');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].date, d);
+  assert.equal(calls[0].tz, 'Asia/Manila');
+  assert.equal(calls[0].fmt, 'yyyy-MM-dd');
+});
+
 test('isBlankRow detects fully blank rows only', () => {
   assert.equal(gas.isBlankRow(['', '  ', '']), true);
   assert.equal(gas.isBlankRow(['', 'x', '']), false);

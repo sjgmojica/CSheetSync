@@ -67,6 +67,13 @@ function isBlankRow(row) {
 function normalizeValue(value) {
   if (value === null || value === undefined)
     return "";
+  if (value instanceof Date) {
+    return Utilities.formatDate(
+      value,
+      Session.getScriptTimeZone(),
+      "yyyy-MM-dd"
+    );
+  }
   return String(value).trim();
 }
 
