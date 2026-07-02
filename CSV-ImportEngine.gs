@@ -34,6 +34,14 @@ function processCSV(csvContent, fileName) {
 
     const csvHeaders = csvData.shift();
 
+    if (config.trimValues) {
+      csvData.forEach(row => {
+        for (let i = 0; i < row.length; i++) {
+          row[i] = normalizeValue(row[i]);
+        }
+      });
+    }
+
     //-------------------------------------------------------
     // Read Sheet
     //-------------------------------------------------------
@@ -89,15 +97,18 @@ function processCSV(csvContent, fileName) {
       fileName: fileName,
       sheetName: config.sheetName,
       total: csvData.length,
-      updated: 0,
+      updated: writeResult.updated,
       inserted: writeResult.inserted,
-      unchanged:0,
+      unchanged: writeResult.unchanged,
       skipped: importResult.skipped,
       startedAt: formatTimestamp(startedAt),
       completedAt: formatTimestamp(completedAt),
       duration: formatDuration(startedAt, completedAt),
       message:
-        `${fileName} successfully validated for ${config.displayName}.`
+        `${fileName}: ${writeResult.updated} updated, ` +
+        `${writeResult.inserted} inserted, ` +
+        `${writeResult.unchanged} unchanged, ` +
+        `${importResult.skipped} skipped for ${config.displayName}.`
     };
   } catch (err) {
     return {
@@ -180,6 +191,7 @@ function executeImport(context) {
 
   const updates = [];
   const inserts = [];
+  const insertedKeys = new Set();
   let skipped = 0;
 
   // CSV lookup
@@ -187,10 +199,16 @@ function executeImport(context) {
 
   // Sheet lookup
   const sheetColumnMap = getColumnMap(sheetHeaders);
-  csvData.forEach(csvRow => {
-    const keyColumn =getColumnIndex(config.keyCsvColumn,csvColumnMap);
+  const keyColumn = getColumnIndex(config.keyCsvColumn, csvColumnMap);
 
-    const key =normalizeValue(csvRow[keyColumn]);
+  csvData.forEach(csvRow => {
+
+    if (config.ignoreBlankRows && isBlankRow(csvRow)) {
+      skipped++;
+      return;
+    }
+
+    const key = normalizeValue(csvRow[keyColumn]);
     if (!key) {
       skipped++;
       return;
@@ -202,6 +220,12 @@ function executeImport(context) {
     //----------------------------------------------------
 
     if (existing.index[key]) {
+
+      if (config.allowUpdate === false) {
+        skipped++;
+        return;
+      }
+
       updates.push({
         key,
         rowNumber: existing.index[key].rowNumber,
@@ -215,6 +239,19 @@ function executeImport(context) {
     //----------------------------------------------------
 
     else {
+
+      if (config.allowInsert === false) {
+        skipped++;
+        return;
+      }
+
+      // Duplicate key within this CSV — first occurrence wins
+      if (insertedKeys.has(key)) {
+        skipped++;
+        return;
+      }
+
+      insertedKeys.add(key);
       inserts.push(csvRow);
     }
   });

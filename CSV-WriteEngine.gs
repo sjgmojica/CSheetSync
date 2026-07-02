@@ -112,8 +112,8 @@ function writeUpdates(sheet, result) {
 
   updates.forEach(update => {
 
-    // Copy the existing row
-    const row = existing.data[update.dataIndex].slice();
+    // Mutate the shared in-memory row directly
+    const row = existing.data[update.dataIndex];
     let hasChanges = false;
 
     // Update mapped fields only
@@ -146,23 +146,24 @@ function writeUpdates(sheet, result) {
     });
 
     if (hasChanges) {
-
-      sheet.getRange(
-        update.rowNumber,
-        1,
-        1,
-        sheetHeaders.length
-      ).setValues([row]);
-
       updatedCount++;
-
     } else {
-
       unchangedCount++;
-
     }
 
   }); // <-- closes updates.forEach()
+
+  // Write every changed row back in a single batched call
+  if (updatedCount > 0) {
+
+    sheet.getRange(
+      config.dataStartRow,
+      1,
+      existing.data.length,
+      sheetHeaders.length
+    ).setValues(existing.data);
+
+  }
 
   Logger.log("Updated: " + updatedCount);
   Logger.log("Unchanged: " + unchangedCount);
